@@ -12,9 +12,19 @@ app = FastAPI()
 
 
 class ChargingCostRequest(BaseModel):
+    """
+    Represents a request for charging cost calculation.
+
+    Attributes:
+        battery_capacity (float): The capacity of the battery in kilowatt-hours.
+        on_peak_cost_per_kwh (float): The cost per kilowatt-hour during on-peak hours.
+        off_peak_cost_per_kwh (float): The cost per kilowatt-hour during off-peak hours.
+        charging_speed (ChargingSpeed): The speed of charging, either "level1" or "level2".
+    """
     battery_capacity: float
     on_peak_cost_per_kwh: float
     off_peak_cost_per_kwh: float
+
     class ChargingSpeed(str, Enum):
         LEVEL1 = "level1"
         LEVEL2 = "level2"
@@ -24,6 +34,18 @@ class ChargingCostRequest(BaseModel):
 
 @app.post("/calculate")
 async def calculate_charging_cost(request: ChargingCostRequest):
+    """
+    Calculate the cost of charging a vehicle based on the battery capacity, and electricity costs.
+
+    Args:
+        request (ChargingCostRequest): The request object containing the charging parameters.
+
+    Returns:
+        dict: A dictionary containing the calculated costs and a summary of the charging cost.
+
+    Raises:
+        dict: An error dictionary if an invalid charging speed is selected.
+    """
     battery_capacity = request.battery_capacity
     on_peak_cost_per_kwh = request.on_peak_cost_per_kwh
     off_peak_cost_per_kwh = request.off_peak_cost_per_kwh
