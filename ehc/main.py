@@ -1,7 +1,12 @@
 # ehc/main.py
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 from enum import Enum
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = FastAPI()
 
@@ -62,4 +67,7 @@ async def calculate_charging_cost(request: ChargingCostRequest):
         "summary": summary
     }
 
-# To run the app, use the command: poetry run uvicorn ehc.main:app --reload
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
